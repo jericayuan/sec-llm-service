@@ -67,5 +67,8 @@ def lambda_handler(event, context):
         logger.error(f"[{request_id}] Bedrock ClientError ({error_code}) for ticker={ticker}, year={year}, period={period}: {e}")
         return {
             "error": "BedrockInvocationError",
-            "message": f"Model invocation faield: {error_code}"
+            "message": f"Model invocation failed: {error_code}"
         }
+    except Exception as e: 
+        logger.error(f"[{request_id}] Unexpected error for ticker={ticker}, year={year}, period={period}: {e}") 
+        return { "error": "InternalError", "message": "An unexpected error occurred while processing the request." }
