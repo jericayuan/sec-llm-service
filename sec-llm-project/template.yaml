@@ -47,6 +47,13 @@ Resources:
       Policies:
         - S3ReadPolicy:
             BucketName: !Ref EdgarBucket
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: 
+                - "arn:aws:bedrock:us-east-1:460589479889:inference-profile/us.anthropic.claude-sonnet-4-6"
+                - "arn:aws:bedrock:*::foundation-model/anthropic.claude-sonnet-4-6"
   
   EdgarBucket:
     Type: AWS::S3::Bucket
