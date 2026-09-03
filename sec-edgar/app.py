@@ -103,5 +103,5 @@ class SecEdgar:
 
 se = SecEdgar('https://www.sec.gov/files/company_tickers.json')
 print(se.annual_filing('0000320193', 2020))
-print(se.quarterly_filing('0000320193', 2020, "Q2"))
+print(se.quarterly_filing('0000320193', 2026, "Q3"))
 print(se.name_to_cik('Apple Inc.'))
