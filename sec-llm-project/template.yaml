@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  sec-llm-project
+
+  Sample SAM Template for sec-llm-project
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+
+Resources:
+  EdgarRefreshFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: edgar_refresh/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref EdgarBucket
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref EdgarBucket
+      Architectures:
+        - x86_64
+      Events:
+        DailyRefresh:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 6 * * ? *)
+
+  DocumentRetrievalFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: document_retrieval/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref EdgarBucket
+          MODEL_ID: "us.anthropic.claude-sonnet-4-6"
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref EdgarBucket
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: 
+                - "arn:aws:bedrock:us-east-1:460589479889:inference-profile/us.anthropic.claude-sonnet-4-6"
+                - "arn:aws:bedrock:*::foundation-model/anthropic.claude-sonnet-4-6"
+  
+  EdgarBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+  
+
+
+

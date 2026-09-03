@@ -9,3 +9,7 @@ __pycache__/
 
 # Amplify build output
 amplify_outputs.json
+
+# Local test/scratch output
+output.json
+response.json
