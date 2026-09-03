@@ -97,6 +97,12 @@ class SecEdgar:
                     filings_by_year[fy] = []
                 filings_by_year[fy].append(i)
         return filings_by_year
+
+    def get_filing_text(self, cik, accession_number, primary_document):
+        cik_no_zeros = str(int(cik))
+        url = f"https://www.sec.gov/Archives/edgar/data/{cik_no_zeros}/{accession_number}/{primary_document}"
+        response = requests.get(url, headers=self.headers)
+        return response.text
         
 
     
